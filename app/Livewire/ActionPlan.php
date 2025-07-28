@@ -32,6 +32,7 @@ class ActionPlan extends Component
         }
 
         $this->reset(['title', 'priority']);
+        $this->dispatch('formReset');
     }
 
     public function markDone($id)

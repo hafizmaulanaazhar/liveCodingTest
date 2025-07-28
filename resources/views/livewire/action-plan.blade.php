@@ -3,15 +3,15 @@
         <h1 class="text-2xl font-bold text-gray-800 mb-4">My Action Plan</h1>
         <form wire:submit.prevent="addTask" class="flex flex-col space-y-4" id="taskForm">
             <div class="flex space-x-2 items-center">
-                <input type="text" wire:model="title" id="titleInput" placeholder="Tulis Agendamu Disini..." class="border border-gray-300 rounded px-3 py-2 flex-1" />
+                <input type="text" wire:model.defer="title" id="titleInput" placeholder="Tulis Agendamu Disini..." class="border border-gray-300 rounded px-3 py-2 flex-1" />
                 <button type="submit" id="submitButton" class="bg-green-500 text-white px-4 py-2 rounded disabled:opacity-50" disabled>
                     Tambah
                 </button>
             </div>
             <div class="flex space-x-4">
-                <label><input type="radio" name="priority" value="high" wire:model="priority" class="priorityRadio"> High Priority</label>
-                <label><input type="radio" name="priority" value="medium" wire:model="priority" class="priorityRadio"> Medium Priority</label>
-                <label><input type="radio" name="priority" value="low" wire:model="priority" class="priorityRadio"> Low Priority</label>
+                <label><input type="radio" name="priority" value="high" wire:model.defer="priority" class="priorityRadio"> High Priority</label>
+                <label><input type="radio" name="priority" value="medium" wire:model.defer="priority" class="priorityRadio"> Medium Priority</label>
+                <label><input type="radio" name="priority" value="low" wire:model.defer="priority" class="priorityRadio"> Low Priority</label>
             </div>
         </form>
     </div>
@@ -63,7 +63,6 @@
         function checkForm() {
             const titleFilled = titleInput.value.trim() !== '';
             const prioritySelected = Array.from(radios).some(r => r.checked);
-
             submitButton.disabled = !(titleFilled && prioritySelected);
         }
         titleInput.addEventListener('input', checkForm);
@@ -71,5 +70,10 @@
             radio.addEventListener('change', checkForm);
         });
         checkForm();
+        document.addEventListener('formReset', function() {
+            titleInput.value = '';
+            radios.forEach(radio => radio.checked = false);
+            submitButton.disabled = true;
+        });
     });
 </script>
