@@ -70,7 +70,6 @@
             radio.addEventListener('change', checkForm);
         });
         checkForm();
-        a
         document.addEventListener('formReset', function() {
             titleInput.value = '';
             radios.forEach(radio => radio.checked = false);
