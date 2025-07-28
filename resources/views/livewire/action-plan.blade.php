@@ -1,21 +1,20 @@
 <div>
     <div class="max-w-2xl mx-auto p-6 bg-white shadow rounded-lg">
         <h1 class="text-2xl font-bold text-gray-800 mb-4">My Action Plan</h1>
-        <form wire:submit.prevent="addTask" wire:key="{{ now()->timestamp }}" class="flex flex-col space-y-4">
+        <form wire:submit.prevent="addTask" class="flex flex-col space-y-4" id="taskForm">
             <div class="flex space-x-2 items-center">
-                <input type="text" wire:model="title" placeholder="Tulis Agendamu Disini..." class="border border-gray-300 rounded px-3 py-2 flex-1" />
-                <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded disabled:opacity-50" @if(empty($title) || empty($priority)) disabled @endif>
+                <input type="text" wire:model="title" id="titleInput" placeholder="Tulis Agendamu Disini..." class="border border-gray-300 rounded px-3 py-2 flex-1" />
+                <button type="submit" id="submitButton" class="bg-green-500 text-white px-4 py-2 rounded disabled:opacity-50" disabled>
                     Tambah
                 </button>
             </div>
             <div class="flex space-x-4">
-                <label><input type="radio" name="priority" wire:model="priority" value="high"> High Priority</label>
-                <label><input type="radio" name="priority" wire:model="priority" value="medium"> Medium Priority</label>
-                <label><input type="radio" name="priority" wire:model="priority" value="low"> Low Priority</label>
+                <label><input type="radio" name="priority" value="high" wire:model="priority" class="priorityRadio"> High Priority</label>
+                <label><input type="radio" name="priority" value="medium" wire:model="priority" class="priorityRadio"> Medium Priority</label>
+                <label><input type="radio" name="priority" value="low" wire:model="priority" class="priorityRadio"> Low Priority</label>
             </div>
         </form>
     </div>
-
     <div class="max-w-xl mx-auto mt-6">
         @if($tasks->isEmpty())
         <p class="text-center text-gray-500">Belum ada agenda, silahkan tambah terlebih dahulu...</p>
@@ -55,3 +54,22 @@
         @endif
     </div>
 </div>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const titleInput = document.getElementById('titleInput');
+        const radios = document.querySelectorAll('.priorityRadio');
+        const submitButton = document.getElementById('submitButton');
+
+        function checkForm() {
+            const titleFilled = titleInput.value.trim() !== '';
+            const prioritySelected = Array.from(radios).some(r => r.checked);
+
+            submitButton.disabled = !(titleFilled && prioritySelected);
+        }
+        titleInput.addEventListener('input', checkForm);
+        radios.forEach(radio => {
+            radio.addEventListener('change', checkForm);
+        });
+        checkForm();
+    });
+</script>
