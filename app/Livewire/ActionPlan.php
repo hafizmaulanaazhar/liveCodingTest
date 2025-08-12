@@ -25,12 +25,19 @@ class ActionPlan extends Component
         $this->validate([
             'title' => 'required|string',
             'priority' => 'required|string|in:high,medium,low',
+            'due_date' => 'required|date',
+            'categoty' => 'required|string',
+            'detail_agenda' => 'required|string',
+
         ]);
         if ($this->title && $this->priority) {
             Task::create([
                 'title' => $this->title,
                 'priority' => $this->priority,
-                'done' => false
+                'done' => false,
+                'due_date' => $this->due_date,
+                'category' => $this->category,
+                'detail_agenda' => $this->detail_agenda
             ]);
         }
 
