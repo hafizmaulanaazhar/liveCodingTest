@@ -12,6 +12,9 @@ class ActionPlan extends Component
     public $priority = '';
     public $editId = null;
     public $editTitle = '';
+    public $due_date = '';
+    public $category = '';
+    public $detail_agenda = '';
 
     public function mount()
     {

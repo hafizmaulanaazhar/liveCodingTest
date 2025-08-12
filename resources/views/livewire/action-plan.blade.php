@@ -16,6 +16,24 @@
             </div>
         </form>
     </div>
+
+    <div class="bg-white shadow rounded-lg p-4 max-w-4xl mx-auto space-y-4 mt-4">
+        <div class="flex flex-col md:flex-row md:space-x-3 space-y-3 md:space-y-0">
+            <input type="date" wire:model.defer="due_date" id="dateInput" class="border border-gray-300 rounded px-3 py-2 flex-1 focus:ring focus:ring-blue-200 focus:border-blue-500" />
+            <select wire:model.defer="category" id="categorySelect" class="border border-gray-300 rounded px-3 py-2 flex-1 focus:ring focus:ring-blue-200 focus:border-blue-500">
+                <option value="">Pilih Kategori</option>
+                <option value="main">Main Job</option>
+                <option value="side">Side Project</option>
+            </select>
+        </div>
+
+        <div>
+            <label for="detailAgenda" class="block font-medium text-gray-700 mb-1">
+                Detail Agenda
+            </label>
+            <textarea wire:model.defer="detail_agenda" id="detailAgenda" rows="5" placeholder="Tulis detail agenda di sini..." class="w-full border border-gray-300 rounded px-4 py-3 text-lg focus:ring focus:ring-blue-200 focus:border-blue-500 resize-none"></textarea>
+        </div>
+    </div>
     <div class="max-w-xl mx-auto mt-6">
         @if($tasks->isEmpty())
         <p class="text-center text-gray-500">Belum ada agenda, silahkan tambah terlebih dahulu...</p>
@@ -44,14 +62,14 @@
                     <button wire:click="startEdit({{ $task->id }})" class="text-blue-600 hover:text-blue-800">
                         <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-gray-700" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
                             <title>Edit</title>
-                            <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/>
+                            <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" />
                         </svg>
                     </button>
                     <button x-on:click="if(confirm('Yakin hapus?')) { $wire.deleteTask({{ $task->id }}) }" class="text-red-600 hover:text-red-800">
                         <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-gray-700" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
                             <title>Hapus</title>
-                            <path d="M9 3a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1h5v2H4V3h5zM6 7h12l-1 12a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2L6 7z"/>
-                          </svg>
+                            <path d="M9 3a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1h5v2H4V3h5zM6 7h12l-1 12a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2L6 7z" />
+                        </svg>
                     </button>
                 </div>
             </li>
