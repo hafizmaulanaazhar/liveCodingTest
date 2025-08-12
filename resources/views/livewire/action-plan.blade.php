@@ -1,6 +1,7 @@
 <div>
     <div class="max-w-2xl mx-auto p-6 bg-white shadow rounded-lg">
-        <h1 class="text-2xl font-bold text-gray-800 mb-4">My Action Plan</h1>
+        <h1 class="text-2xl font-bold italic text-center text-gray-800 mb-1">My Action Plan</h1>
+        <h2 class="text-1xl italic text-center text-gray-900 mb-4">Keep yourself organize and be productive</h2>
         <form wire:submit.prevent="addTask" class="flex flex-col space-y-4" id="taskForm">
             <div class="flex space-x-2 items-center">
                 <input type="text" wire:model.defer="title" id="titleInput" placeholder="Tulis Agendamu Disini..." class="border border-gray-300 rounded px-3 py-2 flex-1" />
@@ -8,7 +9,7 @@
                     Tambah
                 </button>
             </div>
-            <div class="flex space-x-4">
+            <div class="flex space-x-4 italic text-center">
                 <label><input type="radio" name="priority" value="high" wire:model.defer="priority" class="priorityRadio"> High Priority</label>
                 <label><input type="radio" name="priority" value="medium" wire:model.defer="priority" class="priorityRadio"> Medium Priority</label>
                 <label><input type="radio" name="priority" value="low" wire:model.defer="priority" class="priorityRadio"> Low Priority</label>
@@ -39,13 +40,18 @@
                         {{ ucfirst($task->priority) }}
                     </span>
                 </div>
-
                 <div class="flex space-x-2 items-center">
                     <button wire:click="startEdit({{ $task->id }})" class="text-blue-600 hover:text-blue-800">
-                        Edit
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-gray-700" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                            <title>Edit</title>
+                            <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/>
+                        </svg>
                     </button>
                     <button x-on:click="if(confirm('Yakin hapus?')) { $wire.deleteTask({{ $task->id }}) }" class="text-red-600 hover:text-red-800">
-                        Hapus
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-gray-700" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                            <title>Hapus</title>
+                            <path d="M9 3a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1h5v2H4V3h5zM6 7h12l-1 12a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2L6 7z"/>
+                          </svg>
                     </button>
                 </div>
             </li>
