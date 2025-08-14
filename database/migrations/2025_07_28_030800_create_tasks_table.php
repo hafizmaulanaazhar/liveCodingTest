@@ -17,8 +17,8 @@ return new class extends Migration
             $table->enum('priority', ['high', 'medium', 'low']);
             $table->boolean('done')->default(false);
             $table->date('due_date');
-            $table->string('category');
-            $table->string('detail_agenda');
+            $table->string('category')->nullable();
+            $table->string('detail_agenda')->nullable();
             $table->timestamps();
         });
     }

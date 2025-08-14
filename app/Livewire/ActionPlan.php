@@ -3,6 +3,7 @@
 namespace App\Livewire;
 
 use Livewire\Component;
+use Carbon\Carbon;
 use App\Models\Task;
 
 class ActionPlan extends Component
@@ -15,9 +16,12 @@ class ActionPlan extends Component
     public $due_date = '';
     public $category = '';
     public $detail_agenda = '';
+    public $showCategoryForm = false;
 
     public function mount()
     {
+        $this->due_date = now()->toDateString();
+        $this->category = null;
     }
 
     public function addTask()
@@ -25,23 +29,21 @@ class ActionPlan extends Component
         $this->validate([
             'title' => 'required|string',
             'priority' => 'required|string|in:high,medium,low',
-            'due_date' => 'required|date',
-            'categoty' => 'required|string',
-            'detail_agenda' => 'required|string',
-
+            'due_date' => 'nullable|date',
+            'category' => 'nullable|string',
+            'detail_agenda' => 'nullable|string',
         ]);
-        if ($this->title && $this->priority) {
-            Task::create([
-                'title' => $this->title,
-                'priority' => $this->priority,
-                'done' => false,
-                'due_date' => $this->due_date,
-                'category' => $this->category,
-                'detail_agenda' => $this->detail_agenda
-            ]);
-        }
 
-        $this->reset(['title', 'priority']);
+        Task::create([
+            'title' => $this->title,
+            'priority' => $this->priority,
+            'done' => false,
+            'due_date' => $this->due_date ?: now()->toDateString(),
+            'category' => $this->category ?: null,
+            'detail_agenda' => $this->detail_agenda ?: '',
+        ]);
+
+        $this->reset(['title', 'priority', 'due_date', 'category', 'detail_agenda']);
         $this->dispatch('formReset');
     }
 

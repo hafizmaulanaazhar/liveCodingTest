@@ -13,7 +13,7 @@ class Task extends Model
         'priority',
         'done',
         'due_date',
-        'categoty',
+        'category',
         'detail_agenda',
 
     ];
