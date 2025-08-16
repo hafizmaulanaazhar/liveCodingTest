@@ -11,10 +11,18 @@
 
 </head>
 
-<body class="bg-gray-100 text-gray-900 p-6">
-    {{ $slot }}
-    @livewireScripts
-
+<body class="bg-gray-100 min-h-screen flex">
+    <aside class="w-75 bg-white shadow-lg rounded-r-xl p-4 hidden md:flex flex-col space-y-6">
+        @livewire('sidebar')
+    </aside>
+    <main class="flex-1 p-4">
+        <div class="max-w-6xl mx-auto">
+            <div>
+                {{ $slot }}
+                @livewireScripts
+            </div>
+        </div>
+    </main>
 </body>
 
 </html>

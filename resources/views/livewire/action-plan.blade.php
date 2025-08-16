@@ -1,5 +1,5 @@
 <div>
-    <div class="max-w-2xl mx-auto p-6 bg-white shadow rounded-lg">
+    <div class="max-w-2xl mx-auto p-6 bg-white shadow rounded-lg mt-4">
         <h1 class="text-2xl font-bold italic text-center text-gray-800 mb-1">My Action Plan</h1>
         <h2 class="text-1xl italic text-center text-gray-900 mb-4">Keep yourself organize and be productive</h2>
         <form wire:submit.prevent="addTask" class="flex flex-col space-y-4" id="taskForm">
@@ -86,7 +86,7 @@
                             <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" />
                         </svg>
                     </button>
-                    <button onclick="if(confirm('Yakin hapus?')) @this.call('deleteTask', {{ $task->id }})" class="hover:text-red-600">
+                    <button wire:click="deleteTask({{ $task->id }})" onclick="return confirm('Yakin hapus?')" class="hover:text-red-600">
                         <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
                             <path d="M9 3a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1h5v2H4V3h5zM6 7h12l-1 12a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2L6 7z" />
                         </svg>

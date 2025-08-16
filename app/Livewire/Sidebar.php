@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Livewire;
+namespace App\Livewire;
 
 use Livewire\Component;
 use App\Models\Task;
@@ -10,10 +10,11 @@ class Sidebar extends Component
 {
     public $activeFilter = 'today';
 
+    protected $listeners = ['filterChanged' => '$refresh'];
+
     public function setFilter($filter)
     {
         $this->activeFilter = $filter;
-        $this->emit('filterChanged', $filter);
     }
 
     public function getTodayCountProperty()
