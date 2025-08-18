@@ -3,7 +3,6 @@
 namespace App\Livewire;
 
 use Livewire\Component;
-use Carbon\Carbon;
 use App\Models\Task;
 use App\Models\Category;
 use Livewire\Attributes\Computed;
@@ -34,9 +33,9 @@ class ActionPlan extends Component
     public function tasks()
     {
         return Task::where('done', false)
-                ->latest()
-                // ->take($this->page)
-                ->paginate($this->page);
+            ->latest()
+            // ->take($this->page)
+            ->paginate($this->page);
     }
 
     #[Computed()]
@@ -50,23 +49,24 @@ class ActionPlan extends Component
         $this->validate([
             'title' => 'required|string',
             'priority' => 'required|string|in:high,medium,low',
-            'due_date' => 'required|date',
-            'category' => 'required|string',
-            'detail_agenda' => 'required|string',
+            'due_date' => 'nullable|date',
+            'category' => 'nullable|string',
+            'detail_agenda' => 'nullable|string',
         ]);
 
         Task::create([
             'title' => $this->title,
             'priority' => $this->priority,
             'done' => false,
-            'due_date' => $this->due_date ?: now()->toDateString(),
-            'category' => $this->category,
-            'detail_agenda' => $this->detail_agenda,
+            'due_date' => $this->due_date && $this->due_date !== '' ? $this->due_date : now()->toDateString(),
+            'category' => $this->category ?: null,
+            'detail_agenda' => $this->detail_agenda ?: null,
         ]);
 
         $this->reset(['title', 'priority', 'due_date', 'category', 'detail_agenda']);
         $this->dispatch('formReset');
     }
+
 
     public function saveCategory()
     {
@@ -154,8 +154,8 @@ class ActionPlan extends Component
                 'title' => 'required|string',
                 'priority' => 'required|string|in:high,medium,low',
                 'due_date' => 'required|date',
-                'category' => 'required|string',
-                'detail_agenda' => 'required|string',
+                'category' => 'nullable|string',
+                'detail_agenda' => 'nullable|string',
             ]);
 
             $task = Task::find($this->selectedTask->id);
@@ -163,9 +163,9 @@ class ActionPlan extends Component
                 $task->update([
                     'title' => $this->title,
                     'priority' => $this->priority,
-                    'due_date' => $this->due_date,
-                    'category' => $this->category,
-                    'detail_agenda' => $this->detail_agenda,
+                    'due_date' => $this->due_date ?: null,
+                    'category' => $this->category ?: null,
+                    'detail_agenda' => $this->detail_agenda ?: null,
                 ]);
             }
 

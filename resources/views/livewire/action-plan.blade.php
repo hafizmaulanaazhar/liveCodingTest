@@ -29,7 +29,7 @@
                 <div class="flex flex-col md:flex-row md:space-x-4 space-y-3 md:space-y-0 items-end">
                     <div class="flex-1">
                         <label for="due_dateInput" class="block text-gray-700 font-medium mb-1">Due Date</label>
-                        <input type="date" wire:model.defer="due_date" id="due_dateInput" class="border border-gray-300 rounded px-3 py-2 w-full focus:ring focus:ring-blue-200 focus:border-blue-500" />
+                        <input type="date" wire:model.defer="due_date" id="due_dateInput" value="{{ now()->toDateString() }}" class="border border-gray-300 rounded px-3 py-2 w-full focus:ring focus:ring-blue-200 focus:border-blue-500" />
                     </div>
                     <div class="flex-1">
                         <label for="categoryInput" class="flex items-center text-gray-700 font-medium mb-1">
@@ -177,9 +177,9 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 9l7 7 7-7" />
                 </svg>
             </button>
+        </div>
+        @endif
     </div>
-    @endif
-</div>
 </div>
 
 <script>
@@ -201,10 +201,22 @@
         function checkForm() {
             const titleFilled = titleInput.value.trim() !== '';
             const prioritySelected = Array.from(radios).some(r => r.checked);
-            submitButton.disabled = !(titleFilled && prioritySelected);
+            const dueDateFilled = due_dateInput.value.trim() !== '';
+            const categoryFilled = categoryInput.value.trim() !== '';
+            const detailFilled = detailAgendaInput.value.trim() !== '';
+
+            if (detailSection.style.display === 'block') {
+                submitButton.disabled = !(titleFilled && prioritySelected && dueDateFilled && categoryFilled && detailFilled);
+            } else {
+                submitButton.disabled = !(titleFilled && prioritySelected);
+            }
         }
+
         titleInput.addEventListener('input', checkForm);
         radios.forEach(radio => radio.addEventListener('change', checkForm));
+        due_dateInput.addEventListener('input', checkForm);
+        categoryInput.addEventListener('input', checkForm);
+        detailAgendaInput.addEventListener('input', checkForm);
         checkForm();
 
         toggleDetailBtn.addEventListener('click', function() {
@@ -212,6 +224,7 @@
             detailSection.style.display = isVisible ? 'none' : 'block';
             iconDown.style.display = isVisible ? 'inline' : 'none';
             iconUp.style.display = isVisible ? 'none' : 'inline';
+            checkForm();
         });
 
         openCategoryModal.addEventListener('click', function() {
