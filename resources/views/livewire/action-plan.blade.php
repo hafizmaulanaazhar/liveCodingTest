@@ -74,11 +74,11 @@
     </div>
 
     <div class="max-w-xl mx-auto mt-6">
-        @if($tasks->isEmpty())
+        @if($this->tasks->isEmpty())
         <p class="text-center text-gray-500">Belum ada agenda, silahkan tambah terlebih dahulu...</p>
         @else
         <ul class="space-y-3">
-            @foreach($tasks as $task)
+            @foreach($this->tasks as $task)
             <li wire:key="task-{{ $task->id }}" class="relative p-4 bg-white rounded-lg shadow border cursor-pointer hover:shadow-md transition" wire:click="showTaskDetail({{ $task->id }})">
                 <div class="absolute top-3 right-3 flex space-x-2">
                     <button wire:click.stop="startEdit({{ $task->id }})" class="hover:text-blue-600">
@@ -167,7 +167,7 @@
         @endif
     </div>
     <div>
-        @if($tasks->count() < \App\Models\Task::count()) <div class="mt-4 flex justify-center">
+        @if($this->tasks->hasMorePages()) <div class="mt-4 flex justify-center">
             <button wire:click="loadMorePage" wire:loading.attr="disabled" class="text-gray-700 flex items-center gap-2 hover:underline">
                 Tampilkan Lagi
                 <svg wire:loading wire:target="loadMore" class="animate-spin h-4 w-4 text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">

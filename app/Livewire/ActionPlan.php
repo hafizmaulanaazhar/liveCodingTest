@@ -6,6 +6,7 @@ use Livewire\Component;
 use Carbon\Carbon;
 use App\Models\Task;
 use App\Models\Category;
+use Livewire\Attributes\Computed;
 
 class ActionPlan extends Component
 {
@@ -27,6 +28,21 @@ class ActionPlan extends Component
     public function mount()
     {
         $this->categories = Category::all();
+    }
+
+    #[Computed()]
+    public function tasks()
+    {
+        return Task::where('done', false)
+                ->latest()
+                // ->take($this->page)
+                ->paginate($this->page);
+    }
+
+    #[Computed()]
+    public function totalTasks()
+    {
+        return Task::where('done', false)->count();
     }
 
     public function addTask()
@@ -105,10 +121,10 @@ class ActionPlan extends Component
 
     public function loadMorePage()
     {
-        $this->loadingMore = true;
-        usleep(500000);
+        // $this->loadingMore = true;
+        // usleep(500000);
         $this->page += 5;
-        $this->loadingMore = false;
+        // $this->loadingMore = false;
     }
 
     public function showTaskDetail($id)
@@ -159,12 +175,13 @@ class ActionPlan extends Component
 
     public function render()
     {
-        return view('livewire.action-plan', [
-            'tasks' => Task::where('done', false)
-                ->latest()
-                ->take($this->page)
-                ->get(),
-            'totalTasks' => Task::where('done', false)->count()
-        ]);
+        // return view('livewire.action-plan', [
+        //     'tasks' => Task::where('done', false)
+        //         ->latest()
+        //         ->take($this->page)
+        //         ->get(),
+        //     'totalTasks' => Task::where('done', false)->count()
+        // ]);
+        return view('livewire.action-plan');
     }
 }
