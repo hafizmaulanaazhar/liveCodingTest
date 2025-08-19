@@ -3,7 +3,7 @@
 namespace App\Livewire;
 
 use Livewire\Component;
-use App\Models\Task;
+use App\Queries\ActionPlanQuery;
 use App\Models\Category;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\On;
@@ -41,41 +41,13 @@ class ActionPlan extends Component
     #[Computed]
     public function tasks()
     {
-        $query = Task::query();
-
-        if (str_starts_with($this->filter, 'category:')) {
-            $category = str_replace('category:', '', $this->filter);
-            $query->where('category', $category);
-            if ($this->filter !== 'done') {
-                $query->where('done', false);
-            }
-        } else {
-            switch ($this->filter) {
-                case 'today':
-                    $query->whereDate('due_date', today())
-                        ->where('done', false);
-                    break;
-                case 'next7':
-                    $query->whereBetween('due_date', [today()->addDay(), today()->addDays(7)])
-                        ->where('done', false);
-                    break;
-                case 'done':
-                    $query->where('done', true);
-                    break;
-                default:
-                    $query->where('done', false);
-                    break;
-            }
-        }
-
-        return $query->latest()
-            ->paginate($this->page);
+        return ActionPlanQuery::getTasks($this->filter, $this->page);
     }
 
-    #[Computed()]
+    #[Computed]
     public function totalTasks()
     {
-        return Task::where('done', false)->count();
+        return ActionPlanQuery::countPendingTasks();
     }
 
     public function addTask()
@@ -88,7 +60,7 @@ class ActionPlan extends Component
             'detail_agenda' => 'nullable|string',
         ]);
 
-        Task::create([
+        ActionPlanQuery::createTask([
             'title' => $this->title,
             'priority' => $this->priority,
             'done' => false,
@@ -101,48 +73,17 @@ class ActionPlan extends Component
         $this->dispatch('formReset');
     }
 
-
-    public function saveCategory()
-    {
-        $this->validate([
-            'newCategory' => 'required|string|max:255',
-        ]);
-
-        Category::create([
-            'name' => $this->newCategory,
-        ]);
-
-        $this->newCategory = '';
-        $this->categories = Category::all();
-        $this->dispatch('categoryAdded');
-    }
-
     public function markDone($id)
     {
-        $task = Task::find($id);
-        if ($task) {
-            $task->done = true;
-            $task->save();
-        }
-
+        ActionPlanQuery::markTaskDone($id);
         $this->editId = null;
         $this->editTitle = '';
-    }
-
-    public function startEdit($id)
-    {
-        $task = Task::find($id);
-        $this->editId = $id;
-        $this->editTitle = $task->title ?? '';
     }
 
     public function saveEdit()
     {
         if ($this->editId && $this->editTitle !== '') {
-            $task = Task::find($this->editId);
-            $task->title = $this->editTitle;
-            $task->save();
-
+            ActionPlanQuery::updateTaskTitle($this->editId, $this->editTitle);
             $this->editId = null;
             $this->editTitle = '';
         }
@@ -150,35 +91,7 @@ class ActionPlan extends Component
 
     public function deleteTask($id)
     {
-        Task::destroy($id);
-    }
-
-    public function loadMorePage()
-    {
-        // $this->loadingMore = true;
-        // usleep(500000);
-        $this->page += 5;
-        // $this->loadingMore = false;
-    }
-
-    public function showTaskDetail($id)
-    {
-        $task = Task::find($id);
-        if ($task) {
-            $this->selectedTask = $task;
-            $this->title = $task->title;
-            $this->priority = $task->priority;
-            $this->due_date = $task->due_date;
-            $this->category = $task->category;
-            $this->detail_agenda = $task->detail_agenda;
-            $this->showModal = true;
-        }
-    }
-
-    public function closeModal()
-    {
-        $this->showModal = false;
-        $this->selectedTask = null;
+        ActionPlanQuery::deleteTask($id);
     }
 
     public function saveDetail()
@@ -192,30 +105,21 @@ class ActionPlan extends Component
                 'detail_agenda' => 'nullable|string',
             ]);
 
-            $task = Task::find($this->selectedTask->id);
-            if ($task) {
-                $task->update([
-                    'title' => $this->title,
-                    'priority' => $this->priority,
-                    'due_date' => $this->due_date ?: null,
-                    'category' => $this->category ?: null,
-                    'detail_agenda' => $this->detail_agenda ?: null,
-                ]);
-            }
+            ActionPlanQuery::updateTaskDetail($this->selectedTask->id, [
+                'title' => $this->title,
+                'priority' => $this->priority,
+                'due_date' => $this->due_date ?: null,
+                'category' => $this->category ?: null,
+                'detail_agenda' => $this->detail_agenda ?: null,
+            ]);
 
             $this->closeModal();
         }
     }
 
+
     public function render()
     {
-        // return view('livewire.action-plan', [
-        //     'tasks' => Task::where('done', false)
-        //         ->latest()
-        //         ->take($this->page)
-        //         ->get(),
-        //     'totalTasks' => Task::where('done', false)->count()
-        // ]);
         return view('livewire.action-plan');
     }
 }

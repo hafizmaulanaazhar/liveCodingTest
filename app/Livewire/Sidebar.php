@@ -3,8 +3,7 @@
 namespace App\Livewire;
 
 use Livewire\Component;
-use App\Models\Task;
-use Carbon\Carbon;
+use App\Queries\SidebarQuery;
 
 class Sidebar extends Component
 {
@@ -18,45 +17,32 @@ class Sidebar extends Component
 
     public function getTodayCountProperty()
     {
-        return Task::whereDate('due_date', Carbon::today())
-            ->where('done', false)
-            ->count();
+        return SidebarQuery::countTodayTasks();
     }
 
     public function getNext7DaysCountProperty()
     {
-        return Task::whereBetween('due_date', [Carbon::tomorrow(), Carbon::today()->addDays(7)])
-            ->where('done', false)
-            ->count();
+        return SidebarQuery::countNext7DaysTasks();
     }
 
     public function getMainJobProperty()
     {
-        return Task::where('category', 'Main Job')
-            ->where('done', false)
-            ->count();
+        return SidebarQuery::countMainJobTasks();
     }
 
     public function getSideJobProperty()
     {
-        return Task::where('category', 'Side Job')
-            ->where('done', false)
-            ->count();
+        return SidebarQuery::countSideJobTasks();
     }
 
     public function getDoneCountProperty()
     {
-        return Task::where('done', true)->count();
+        return SidebarQuery::countDoneTasks();
     }
 
     public function getCategoriesProperty()
     {
-        return Task::select('category')
-            ->selectRaw('COUNT(*) as total')
-            ->where('done', false)
-            ->whereNotNull('category')
-            ->groupBy('category')
-            ->get();
+        return SidebarQuery::getCategories();
     }
 
     public function render()
