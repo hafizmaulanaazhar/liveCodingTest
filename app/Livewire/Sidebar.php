@@ -6,56 +6,61 @@ use Livewire\Component;
 use App\Models\Task;
 use Carbon\Carbon;
 
-
 class Sidebar extends Component
 {
     public $activeFilter = 'today';
 
-    protected $listeners = ['filterChanged' => '$refresh'];
-
     public function setFilter($filter)
     {
         $this->activeFilter = $filter;
+        $this->dispatch('filterChanged', filter: $filter);
     }
 
     public function getTodayCountProperty()
     {
-        return Task::whereDate('due_date', Carbon::today())->where('done', 0)->count();
+        return Task::whereDate('due_date', Carbon::today())
+            ->where('done', false)
+            ->count();
     }
 
     public function getNext7DaysCountProperty()
     {
-        return Task::whereBetween('due_date', [Carbon::tomorrow(), Carbon::today()->addDays(7)])->where('done', 0)->count();
+        return Task::whereBetween('due_date', [Carbon::tomorrow(), Carbon::today()->addDays(7)])
+            ->where('done', false)
+            ->count();
+    }
+
+    public function getMainJobProperty()
+    {
+        return Task::where('category', 'Main Job')
+            ->where('done', false)
+            ->count();
+    }
+
+    public function getSideJobProperty()
+    {
+        return Task::where('category', 'Side Job')
+            ->where('done', false)
+            ->count();
+    }
+
+    public function getDoneCountProperty()
+    {
+        return Task::where('done', true)->count();
     }
 
     public function getCategoriesProperty()
     {
         return Task::select('category')
             ->selectRaw('COUNT(*) as total')
-            ->where('done', 0)
+            ->where('done', false)
+            ->whereNotNull('category')
             ->groupBy('category')
             ->get();
     }
 
-    public function getDoneCountProperty()
-    {
-        return Task::where('done', 1)->count();
-    }
-
-    public function getMainJobProperty()
-    {
-        return Task::where('category', 'Main Job')->where('done', 0)->count();
-    }
-
-    public function getSideJobProperty()
-    {
-        return Task::where('category', 'Side Job')->where('done', 0)->count();
-    }
-
     public function render()
     {
-        return view('livewire.sidebar', [
-            'tasks' => Task::latest()->get()
-        ]);
+        return view('livewire.sidebar');
     }
 }

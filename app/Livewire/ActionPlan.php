@@ -6,6 +6,7 @@ use Livewire\Component;
 use App\Models\Task;
 use App\Models\Category;
 use Livewire\Attributes\Computed;
+use Livewire\Attributes\On;
 
 class ActionPlan extends Component
 {
@@ -23,18 +24,51 @@ class ActionPlan extends Component
     public $loadingMore = false;
     public $selectedTask = null;
     public $showModal = false;
+    public $filter = 'today';
+
 
     public function mount()
     {
         $this->categories = Category::all();
     }
 
-    #[Computed()]
+    #[On('filterChanged')]
+    public function applyFilter($filter)
+    {
+        $this->filter = $filter;
+    }
+
+    #[Computed]
     public function tasks()
     {
-        return Task::where('done', false)
-            ->latest()
-            // ->take($this->page)
+        $query = Task::query();
+
+        if (str_starts_with($this->filter, 'category:')) {
+            $category = str_replace('category:', '', $this->filter);
+            $query->where('category', $category);
+            if ($this->filter !== 'done') {
+                $query->where('done', false);
+            }
+        } else {
+            switch ($this->filter) {
+                case 'today':
+                    $query->whereDate('due_date', today())
+                        ->where('done', false);
+                    break;
+                case 'next7':
+                    $query->whereBetween('due_date', [today()->addDay(), today()->addDays(7)])
+                        ->where('done', false);
+                    break;
+                case 'done':
+                    $query->where('done', true);
+                    break;
+                default:
+                    $query->where('done', false);
+                    break;
+            }
+        }
+
+        return $query->latest()
             ->paginate($this->page);
     }
 

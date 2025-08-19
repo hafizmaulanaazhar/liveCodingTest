@@ -11,18 +11,18 @@
 
 </head>
 
-<body class="bg-gray-100 min-h-screen flex">
-    <aside class="w-75 bg-white shadow-lg rounded-r-xl p-4 hidden md:flex flex-col space-y-6">
-        @livewire('sidebar')
-    </aside>
-    <main class="flex-1 p-4">
-        <div class="max-w-6xl mx-auto">
-            <div>
-                {{ $slot }}
-                @livewireScripts
-            </div>
+<body class="bg-gray-100 min-h-screen">
+    <div class="flex h-screen">
+        <!-- Sidebar -->
+        <div class="w-64 bg-white shadow-md fixed h-full overflow-y-auto">
+            @livewire('sidebar')
         </div>
-    </main>
+
+        <!-- Main Content -->
+        <div class="flex-1 ml-64 p-6 overflow-y-auto">
+            @livewire('action-plan')
+        </div>
+    </div>
 </body>
 
 </html>
